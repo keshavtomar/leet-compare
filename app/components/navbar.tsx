@@ -15,7 +15,9 @@ export default function Navbar() {
     }
   };
 
-  window.addEventListener("resize", resizeHandler);
+  if(window !== undefined){
+    window.addEventListener("resize", resizeHandler);
+  }
 
   useEffect(() => {
     resizeHandler();
@@ -23,7 +25,7 @@ export default function Navbar() {
 
   return (
     <div
-      className={`group fixed w-full h-auto shadow-sm ${
+      className={`group fixed z-10 w-full h-auto shadow-sm ${
         navbarOpen && !laptopview ? "h-screen" : ""
       }`}
     >

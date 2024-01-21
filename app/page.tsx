@@ -1,29 +1,41 @@
-'use client';
+"use client";
 
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardDescription } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import Difficultychart from "./components/difficulty-chart";
+import Cardcustom from "./components/card";
+import LanguageChart from "./components/language-chart";
+import Tagchart from "./components/tag-chart";
+
 
 export default function Home() {
   const [formitems, setFormItems] = useState({ id: "" });
-  const [data, setdata] = useState(null);
+  const [error, seterror] = useState("");
+  const [difficulty, setdifficulty] = useState(null);
+  const [languages, setlanguages] = useState(null);
+  const [advanced, setadvanced] = useState(null); 
+  const [intermediate, setintermediate] = useState(null); 
+  const [fundamental, setfundamental] = useState(null); 
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const idValue = (e.currentTarget.elements.namedItem("id") as HTMLInputElement)?.value;
-
-    console.log("Captured input value:", idValue);
-
     try {
-      const res = await fetch('/api/leetcode',{
-        method:'POST',
-        headers:{
-          'Content-Type':'application/json',
+      const res = await fetch("/api/leetcode", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify({id:formitems.id}),
-      }) 
-      console.log(res);
+        body: JSON.stringify({ id: formitems.id }),
+      });
+      const x = await res.json();
+      if (x.data) {
+        setdifficulty(x.data.submitStatsGlobal);
+        seterror("");
+      } else {
+        seterror("No such user exists");
+      }
     } catch (error) {
       console.log(error);
     }
@@ -33,7 +45,34 @@ export default function Home() {
     setFormItems({ ...formitems, id: e.target.value });
   };
 
-  
+  useEffect(() => {
+    const handleSubmit2 = async () => {
+      try {
+        const res = await fetch("/api/leetcode", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ id: "keshav_tomar_" }),
+        });
+        const x = await res.json();
+        if (x.data) {
+          setdifficulty(x.data.submitStatsGlobal);
+          setlanguages(x.data.languageProblemCount);
+          setadvanced(x.data.tagProblemCounts.advanced);
+          setintermediate(x.data.tagProblemCounts.intermediate);
+          setfundamental(x.data.tagProblemCounts.fundamental);
+          seterror("");
+        } else {
+          seterror("No such user exists");
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    handleSubmit2();
+  }, []);
 
   return (
     <main className="min-h-screen pt-24">
@@ -53,11 +92,44 @@ export default function Home() {
                 </div>
               </div>
             </form>
+            <CardDescription>{error}</CardDescription>
           </CardContent>
         </Card>
       </div>
 
-      <div>Fetched Items</div>
+      <div>
+        {difficulty && languages && advanced && intermediate && fundamental && (
+          <div className="flex content-around justify-around flex-wrap flex-grow">
+            <div className="max-w-[600px] p-5 lg:min-w-[560px]">
+              <Cardcustom>
+                <Difficultychart data={difficulty} />
+              </Cardcustom>
+            </div>
+            <div className="max-w-[600px] p-5 lg:min-w-[560px]">
+              <Cardcustom>
+                <LanguageChart data={languages} />
+              </Cardcustom>
+            </div>
+            <div className="max-w-[900px] p-4 sm:w-4/5 lg:min-w-[850px]">
+              <Cardcustom>
+                <Tagchart data = {advanced} color = "#EF4743" title="Advanced"/>
+              </Cardcustom>
+            </div>
+            <div className="max-w-[900px] p-4 sm:w-4/5 lg:min-w-[850px]">
+              <Cardcustom>
+                <Tagchart data = {intermediate} color = "#FFB800" title = "Intermediate"/>
+              </Cardcustom>
+            </div>
+            <div className="max-w-[900px] p-4 sm:w-4/5 lg:min-w-[850px]">
+              <Cardcustom>
+                <Tagchart data = {fundamental} color = "#00AF9B" title = "Fundamental"/>
+              </Cardcustom>
+            </div>
+          </div>
+        )}
+      </div>
     </main>
   );
 }
+
+// colors:["#00AF9B", "#FFB800", "#EF4743"],
