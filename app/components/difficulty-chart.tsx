@@ -34,7 +34,7 @@ export default function Difficultychart(Props: Propstype) {
       relevantdata[2][1] = Props.data.acSubmissionNum[2].count;
       relevantdata[3][1] = Props.data.acSubmissionNum[3].count;
       options.title = `Solved Questions (${Props.data.acSubmissionNum[0].count})`;
-    },[]);
+    },[Props.data.acSubmissionNum]);
 
   return (
     <Cardcustom>

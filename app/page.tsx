@@ -7,16 +7,17 @@ import Difficultychart from "./components/difficulty-chart";
 import Cardcustom from "./components/card";
 import LanguageChart from "./components/language-chart";
 import Tagchart from "./components/tag-chart";
-
+import CalendarChart from "./components/calendar-chart";
 
 export default function Home() {
   const [formitems, setFormItems] = useState({ id: "" });
   const [error, seterror] = useState("");
   const [difficulty, setdifficulty] = useState(null);
   const [languages, setlanguages] = useState(null);
-  const [advanced, setadvanced] = useState(null); 
-  const [intermediate, setintermediate] = useState(null); 
-  const [fundamental, setfundamental] = useState(null); 
+  const [advanced, setadvanced] = useState(null);
+  const [intermediate, setintermediate] = useState(null);
+  const [fundamental, setfundamental] = useState(null);
+  const [calendar, setcalendar] = useState(null);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -32,6 +33,11 @@ export default function Home() {
       const x = await res.json();
       if (x.data) {
         setdifficulty(x.data.submitStatsGlobal);
+        setlanguages(x.data.languageProblemCount);
+        setadvanced(x.data.tagProblemCounts.advanced);
+        setintermediate(x.data.tagProblemCounts.intermediate);
+        setfundamental(x.data.tagProblemCounts.fundamental);
+        setcalendar(x.data.userCalendar);
         seterror("");
       } else {
         seterror("No such user exists");
@@ -45,34 +51,35 @@ export default function Home() {
     setFormItems({ ...formitems, id: e.target.value });
   };
 
-  useEffect(() => {
-    const handleSubmit2 = async () => {
-      try {
-        const res = await fetch("/api/leetcode", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ id: "keshav_tomar_" }),
-        });
-        const x = await res.json();
-        if (x.data) {
-          setdifficulty(x.data.submitStatsGlobal);
-          setlanguages(x.data.languageProblemCount);
-          setadvanced(x.data.tagProblemCounts.advanced);
-          setintermediate(x.data.tagProblemCounts.intermediate);
-          setfundamental(x.data.tagProblemCounts.fundamental);
-          seterror("");
-        } else {
-          seterror("No such user exists");
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    };
+  // useEffect(() => {
+  //   const handleSubmit2 = async () => {
+  //     try {
+  //       const res = await fetch("/api/leetcode", {
+  //         method: "POST",
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //         },
+  //         body: JSON.stringify({ id: "keshav_tomar_" }),
+  //       });
+  //       const x = await res.json();
+  //       if (x.data) {
+  //         setdifficulty(x.data.submitStatsGlobal);
+  //         setlanguages(x.data.languageProblemCount);
+  //         setadvanced(x.data.tagProblemCounts.advanced);
+  //         setintermediate(x.data.tagProblemCounts.intermediate);
+  //         setfundamental(x.data.tagProblemCounts.fundamental);
+  //         setcalendar(x.data.userCalendar);
+  //         seterror("");
+  //       } else {
+  //         seterror("No such user exists");
+  //       }
+  //     } catch (error) {
+  //       console.log(error);
+  //     }
+  //   };
 
-    handleSubmit2();
-  }, []);
+  //   handleSubmit2();
+  // }, []);
 
   return (
     <main className="min-h-screen pt-24">
@@ -112,17 +119,30 @@ export default function Home() {
             </div>
             <div className="max-w-[900px] p-4 sm:w-4/5 lg:min-w-[850px]">
               <Cardcustom>
-                <Tagchart data = {advanced} color = "#EF4743" title="Advanced"/>
+                <Tagchart data={advanced} color="#EF4743" title="Advanced" />
               </Cardcustom>
             </div>
             <div className="max-w-[900px] p-4 sm:w-4/5 lg:min-w-[850px]">
               <Cardcustom>
-                <Tagchart data = {intermediate} color = "#FFB800" title = "Intermediate"/>
+                <Tagchart
+                  data={intermediate}
+                  color="#FFB800"
+                  title="Intermediate"
+                />
               </Cardcustom>
             </div>
             <div className="max-w-[900px] p-4 sm:w-4/5 lg:min-w-[850px]">
               <Cardcustom>
-                <Tagchart data = {fundamental} color = "#00AF9B" title = "Fundamental"/>
+                <Tagchart
+                  data={fundamental}
+                  color="#00AF9B"
+                  title="Fundamental"
+                />
+              </Cardcustom>
+            </div>
+            <div className="max-w-[900px] p-4 sm:w-4/5 lg:min-w-[850px]">
+              <Cardcustom>
+                <CalendarChart />
               </Cardcustom>
             </div>
           </div>
