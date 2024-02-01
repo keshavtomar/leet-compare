@@ -30,7 +30,7 @@ export default function LanguageChart({ data }: Propstype) {
 
   useEffect(() => {
     fillrelevantdata();
-  }, [data]);
+  },[data]);
 
   return (
     <Cardcustom>

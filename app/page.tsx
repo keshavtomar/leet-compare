@@ -8,6 +8,7 @@ import Cardcustom from "./components/card";
 import LanguageChart from "./components/language-chart";
 import Tagchart from "./components/tag-chart";
 import CalendarChart from "./components/calendar-chart";
+import axios from "axios";
 
 export default function Home() {
   const [formitems, setFormItems] = useState({ id: "" });
@@ -51,35 +52,53 @@ export default function Home() {
     setFormItems({ ...formitems, id: e.target.value });
   };
 
-  // useEffect(() => {
-  //   const handleSubmit2 = async () => {
-  //     try {
-  //       const res = await fetch("/api/leetcode", {
-  //         method: "POST",
-  //         headers: {
-  //           "Content-Type": "application/json",
-  //         },
-  //         body: JSON.stringify({ id: "keshav_tomar_" }),
-  //       });
-  //       const x = await res.json();
-  //       if (x.data) {
-  //         setdifficulty(x.data.submitStatsGlobal);
-  //         setlanguages(x.data.languageProblemCount);
-  //         setadvanced(x.data.tagProblemCounts.advanced);
-  //         setintermediate(x.data.tagProblemCounts.intermediate);
-  //         setfundamental(x.data.tagProblemCounts.fundamental);
-  //         setcalendar(x.data.userCalendar);
-  //         seterror("");
-  //       } else {
-  //         seterror("No such user exists");
-  //       }
-  //     } catch (error) {
-  //       console.log(error);
-  //     }
-  //   };
+  useEffect(() => {
+    const handleSubmit2 = async () => {
+      try {
+        const res = await fetch("/api/leetcode", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ id: "mdsaquibshakeel" }),
+        });
+        
+        const res2 = await fetch("/api/contest", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ id: "mdsaquibshakeel" }),
+          // keshav_tomar_
+          //rabel
+        });
+    
+        
+        const y = await res2.json();
+        console.log("Here it is")
+        console.log(y);
+        
 
-  //   handleSubmit2();
-  // }, []);
+
+        const x = await res.json();
+        if (x.data) {
+          setdifficulty(x.data.submitStatsGlobal);
+          setlanguages(x.data.languageProblemCount);
+          setadvanced(x.data.tagProblemCounts.advanced);
+          setintermediate(x.data.tagProblemCounts.intermediate);
+          setfundamental(x.data.tagProblemCounts.fundamental);
+          setcalendar(x.data.userCalendar);
+          seterror("");
+        } else {
+          seterror("No such user exists");
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    handleSubmit2();
+  }, []);
 
   return (
     <main className="min-h-screen pt-24">
@@ -105,7 +124,7 @@ export default function Home() {
       </div>
 
       <div>
-        {difficulty && languages && advanced && intermediate && fundamental && (
+        {difficulty && languages && advanced && intermediate && fundamental && calendar && (
           <div className="flex content-around justify-around flex-wrap flex-grow">
             <div className="max-w-[600px] p-5 lg:min-w-[560px]">
               <Cardcustom>
@@ -142,7 +161,9 @@ export default function Home() {
             </div>
             <div className="max-w-[900px] p-4 sm:w-4/5 lg:min-w-[850px]">
               <Cardcustom>
-                <CalendarChart />
+                <CalendarChart 
+                calendar = {calendar}
+                />
               </Cardcustom>
             </div>
           </div>
