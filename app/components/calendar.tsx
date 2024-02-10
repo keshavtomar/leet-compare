@@ -54,7 +54,7 @@ export default function Calendar({ data, noofyears }: PropsType) {
   useEffect(() => {
     function run() {
       setcdata(prevdata.concat(data.map((item) => [new Date(item[0]), item[1]])));
-      setheight((noofyears-1)*150+20);
+      setheight(Math.min(2,noofyears)*150+20);
     }
     run();
   }, [data]);

@@ -2,6 +2,7 @@ import { Card } from "@/components/ui/card";
 import React, { useEffect } from "react";
 import Chart from "react-google-charts";
 import Cardcustom from "./card";
+import { data } from "@/data/data";
 
 type Propstype = {
   data: {
@@ -24,7 +25,7 @@ const x = relevantdata[1][1];
 export const options = {
   title: "",
   is3D: true,
-  colors:["#00AF9B", "#FFB800", "#EF4743"],
+  colors:data.colors,
 };
 
 export default function Difficultychart(Props: Propstype) {
@@ -34,7 +35,7 @@ export default function Difficultychart(Props: Propstype) {
       relevantdata[2][1] = Props.data.acSubmissionNum[2].count;
       relevantdata[3][1] = Props.data.acSubmissionNum[3].count;
       options.title = `Solved Questions (${Props.data.acSubmissionNum[0].count})`;
-    },[Props.data.acSubmissionNum]);
+    },[Props]);
 
   return (
     <Cardcustom>

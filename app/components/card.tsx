@@ -7,7 +7,7 @@ type childrenprops = {
 
 export default function Cardcustom({children}:childrenprops) {
   return (
-    <Card className='w-full shadow-lg '>
+    <Card className='w-full shadow-lg p-2'>
         {children}
     </Card>
   )

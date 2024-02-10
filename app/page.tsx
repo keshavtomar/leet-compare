@@ -8,10 +8,10 @@ import Cardcustom from "./components/card";
 import LanguageChart from "./components/language-chart";
 import Tagchart from "./components/tag-chart";
 import CalendarChart from "./components/calendar-chart";
-import axios from "axios";
+import Contest from "./components/contest";
 
 export default function Home() {
-  const [formitems, setFormItems] = useState({ id: "" });
+  const [formitems, setFormItems] = useState({ id: "keshav_tomar_" });
   const [error, seterror] = useState("");
   const [difficulty, setdifficulty] = useState(null);
   const [languages, setlanguages] = useState(null);
@@ -19,6 +19,9 @@ export default function Home() {
   const [intermediate, setintermediate] = useState(null);
   const [fundamental, setfundamental] = useState(null);
   const [calendar, setcalendar] = useState(null);
+  const [timeline, settimeline] = useState(null);
+
+
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -55,31 +58,15 @@ export default function Home() {
   useEffect(() => {
     const handleSubmit2 = async () => {
       try {
+
         const res = await fetch("/api/leetcode", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ id: "mdsaquibshakeel" }),
+          body: JSON.stringify({ id: formitems.id }),
         });
         
-        const res2 = await fetch("/api/contest", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ id: "mdsaquibshakeel" }),
-          // keshav_tomar_
-          //rabel
-        });
-    
-        
-        const y = await res2.json();
-        console.log("Here it is")
-        console.log(y);
-        
-
-
         const x = await res.json();
         if (x.data) {
           setdifficulty(x.data.submitStatsGlobal);
@@ -165,6 +152,9 @@ export default function Home() {
                 calendar = {calendar}
                 />
               </Cardcustom>
+            </div>
+            <div className="max-w-[900px] p-4 sm:w-4/5 lg:min-w-[850px]">
+                <Contest id={formitems.id}/>
             </div>
           </div>
         )}

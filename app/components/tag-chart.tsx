@@ -18,6 +18,11 @@ type dataitem = [string, string | number, string | { role: string }];
 
 type optionstype = {
     title: string;
+    animation: {
+      startup: boolean;
+      easing: string;
+      duration: number;
+    };
 };
   
 
@@ -27,6 +32,7 @@ export default function App({ data, color, title }: Propstype) {
   const [options, setoptions] = React.useState<optionstype|null>(null);
   const [relevantdata, setrelevantdata] = React.useState<dataitem[]>(prevdata);
 
+  
   const fillrelevantdata = async () => {
     setrelevantdata(
       prevdata.concat(
@@ -39,9 +45,13 @@ export default function App({ data, color, title }: Propstype) {
     );
     setoptions({
       title: title,
+      animation: {
+        startup: true,
+        easing: 'linear',
+        duration: 2000,
+      },
     });
   };
-
   useEffect(() => {
     fillrelevantdata();
   }, [data]);
