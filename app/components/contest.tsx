@@ -23,6 +23,8 @@ export default function Contest({ id }: { id: string }) {
         if (t.data) {
           setUserContestRanking(t.data.userContestRanking);
           setUserContestRankingHistory(t.data.userContestRankingHistory);
+          console.log(t.data.userContestRanking);
+          console.log(t.data.userContestRankingHistory);
         }
       } catch (error) {
         console.error("Error fetching contest data:", error);
@@ -38,9 +40,9 @@ export default function Contest({ id }: { id: string }) {
     <div>
       {userContestRankingHistory && userContestRanking && (
         <>
-          <Cardcustom>
-            <Table />
-          </Cardcustom>
+          {/* <Cardcustom>
+            <Table tabledata={userContestRanking} id={id}/>
+          </Cardcustom> */}
           <Cardcustom>
             <Timeline propsdata={userContestRankingHistory} id={id} />
           </Cardcustom>

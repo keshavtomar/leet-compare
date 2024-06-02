@@ -94,9 +94,6 @@ export default function Timeline({ propsdata, id }: TimelineDataType) {
       return new Date(item.contest.startTime * 1000).toLocaleDateString();
     });
 
-  useEffect(() => {
-    console.log(points, dates);
-  });
 
   const series = [
     {

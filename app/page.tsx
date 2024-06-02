@@ -21,8 +21,6 @@ export default function Home() {
   const [calendar, setcalendar] = useState(null);
   const [timeline, settimeline] = useState(null);
 
-
-
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -34,7 +32,9 @@ export default function Home() {
         },
         body: JSON.stringify({ id: formitems.id }),
       });
+
       const x = await res.json();
+      // console.log(x.data);
       if (x.data) {
         setdifficulty(x.data.submitStatsGlobal);
         setlanguages(x.data.languageProblemCount);
@@ -58,26 +58,72 @@ export default function Home() {
   useEffect(() => {
     const handleSubmit2 = async () => {
       try {
-
-        const res = await fetch("/api/leetcode", {
+        const contestFetched = await fetch("/api/contest", {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ id: formitems.id }),
+          body: JSON.stringify({ id: "keshav_tomar_" }),
         });
-        
-        const x = await res.json();
-        if (x.data) {
-          setdifficulty(x.data.submitStatsGlobal);
-          setlanguages(x.data.languageProblemCount);
-          setadvanced(x.data.tagProblemCounts.advanced);
-          setintermediate(x.data.tagProblemCounts.intermediate);
-          setfundamental(x.data.tagProblemCounts.fundamental);
-          setcalendar(x.data.userCalendar);
+        const contestParsed = JSON.parse(await contestFetched.json());
+        // console.log("1 ");
+        // console.log(contestParsed);
+
+        const profileFetched = await fetch("/api/profile", {
+          method: "POST",
+          body: JSON.stringify({ id: "keshav_tomar_" }),
+        });
+        const profileParsed = JSON.parse(await profileFetched.json());
+        // console.log("2 ");
+        // console.log(profileParsed);
+        const languageFetched = await fetch("/api/language", {
+          method: "POST",
+          body: JSON.stringify({ id: "keshav_tomar_" }),
+        });
+        const languageParsed = JSON.parse(await languageFetched.json());
+        // console.log("3 ");
+        // console.log(languageParsed);
+        const tagProblemFetched = await fetch("/api/tagProblems", {
+          method: "POST",
+          body: JSON.stringify({ id: "keshav_tomar_" }),
+        });
+        const tagProblemParsed = JSON.parse(await tagProblemFetched.json());
+        // console.log("4 ");
+        // console.log(tagProblemParsed);
+        const problemSovedFetched = await fetch("/api/problemSolved", {
+          method: "POST",
+          body: JSON.stringify({ id: "keshav_tomar_" }),
+        });
+        const problemSolvedParsed = JSON.parse(
+          await problemSovedFetched.json()
+        );
+        // console.log("5 ");
+        // console.log(problemSolvedParsed);
+
+        var data: any = {};
+        data = contestParsed.data ? { ...data, ...contestParsed.data } : data;
+        data = profileParsed.data.matchedUser
+          ? { ...data, ...profileParsed.data.matchedUser }
+          : data;
+        data = languageParsed.data.matchedUser
+          ? { ...data, ...languageParsed.data.matchedUser }
+          : data;
+        data = tagProblemParsed.data.matchedUser
+          ? { ...data, ...tagProblemParsed.data.matchedUser }
+          : data;
+        data = problemSolvedParsed.data.matchedUser
+          ? { ...data, ...problemSolvedParsed.data.matchedUser }
+          : data;
+
+        console.log(data);
+
+        if (true) {
+          await setdifficulty(data.submitStatsGlobal);
+          await setlanguages(data.languageProblemCount);
+          await setadvanced(data.tagProblemCounts.advanced);
+          await setintermediate(data.tagProblemCounts.intermediate);
+          await setfundamental(data.tagProblemCounts.fundamental);
+          // setcalendar(data.userCalendar);
           seterror("");
         } else {
-          seterror("No such user exists");
+          seterror("No such users");
         }
       } catch (error) {
         console.log(error);
@@ -85,9 +131,10 @@ export default function Home() {
     };
 
     handleSubmit2();
-  }, []);
+  }, [formitems.id]);
 
   return (
+    // <div className="pt-24">Test</div>
     <main className="min-h-screen pt-24">
       <div className="profile-input w-full max-w-[600px] shadow-lg mx-auto">
         <Card>
@@ -98,7 +145,7 @@ export default function Home() {
                   <Input
                     id="name"
                     name="id"
-                    placeholder="Leetcode handle"
+                    placeholder="Leetcode handle, eg: keshav_tomar_"
                     value={formitems.id}
                     onChange={handleChange}
                   />
@@ -111,53 +158,55 @@ export default function Home() {
       </div>
 
       <div>
-        {difficulty && languages && advanced && intermediate && fundamental && calendar && (
-          <div className="flex content-around justify-around flex-wrap flex-grow">
-            <div className="max-w-[600px] p-5 lg:min-w-[560px]">
-              <Cardcustom>
-                <Difficultychart data={difficulty} />
-              </Cardcustom>
+        {difficulty &&
+          languages &&
+          advanced &&
+          intermediate &&
+          fundamental && (
+            <div className="flex content-around justify-around flex-wrap flex-grow">
+              <div className="max-w-[600px] p-5 lg:min-w-[560px]">
+                <Cardcustom>
+                  <Difficultychart data={difficulty} />
+                </Cardcustom>
+              </div>
+              <div className="max-w-[600px] p-5 lg:min-w-[560px]">
+                <Cardcustom>
+                  <LanguageChart data={languages} />
+                </Cardcustom>
+              </div>
+              <div className="max-w-[900px] p-4 sm:w-4/5 lg:min-w-[850px]">
+                <Cardcustom>
+                  <Tagchart data={advanced} color="#EF4743" title="Advanced" />
+                </Cardcustom>
+              </div>
+              <div className="max-w-[900px] p-4 sm:w-4/5 lg:min-w-[850px]">
+                <Cardcustom>
+                  <Tagchart
+                    data={intermediate}
+                    color="#FFB800"
+                    title="Intermediate"
+                  />
+                </Cardcustom>
+              </div>
+              <div className="max-w-[900px] p-4 sm:w-4/5 lg:min-w-[850px]">
+                <Cardcustom>
+                  <Tagchart
+                    data={fundamental}
+                    color="#00AF9B"
+                    title="Fundamental"
+                  />
+                </Cardcustom>
+              </div>
+              <div className="max-w-[900px] p-4 sm:w-4/5 lg:min-w-[850px]">
+                {/* <Cardcustom>
+                  <CalendarChart calendar={calendar} />
+                </Cardcustom> */}
+              </div>
+              <div className="max-w-[900px] p-4 sm:w-4/5 lg:min-w-[850px]">
+                <Contest id={formitems.id} />
+              </div>
             </div>
-            <div className="max-w-[600px] p-5 lg:min-w-[560px]">
-              <Cardcustom>
-                <LanguageChart data={languages} />
-              </Cardcustom>
-            </div>
-            <div className="max-w-[900px] p-4 sm:w-4/5 lg:min-w-[850px]">
-              <Cardcustom>
-                <Tagchart data={advanced} color="#EF4743" title="Advanced" />
-              </Cardcustom>
-            </div>
-            <div className="max-w-[900px] p-4 sm:w-4/5 lg:min-w-[850px]">
-              <Cardcustom>
-                <Tagchart
-                  data={intermediate}
-                  color="#FFB800"
-                  title="Intermediate"
-                />
-              </Cardcustom>
-            </div>
-            <div className="max-w-[900px] p-4 sm:w-4/5 lg:min-w-[850px]">
-              <Cardcustom>
-                <Tagchart
-                  data={fundamental}
-                  color="#00AF9B"
-                  title="Fundamental"
-                />
-              </Cardcustom>
-            </div>
-            <div className="max-w-[900px] p-4 sm:w-4/5 lg:min-w-[850px]">
-              <Cardcustom>
-                <CalendarChart 
-                calendar = {calendar}
-                />
-              </Cardcustom>
-            </div>
-            <div className="max-w-[900px] p-4 sm:w-4/5 lg:min-w-[850px]">
-                <Contest id={formitems.id}/>
-            </div>
-          </div>
-        )}
+          )}
       </div>
     </main>
   );

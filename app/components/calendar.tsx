@@ -57,7 +57,7 @@ export default function Calendar({ data, noofyears }: PropsType) {
       setheight(Math.min(2,noofyears)*150+20);
     }
     run();
-  }, [data]);
+  }, [data, noofyears]);
 
   return (
     <div>
